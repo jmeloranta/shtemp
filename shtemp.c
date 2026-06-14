@@ -24,6 +24,7 @@ int read_untilcr(char *buf, int maxlen) {
   
   int pos = 0, bytes_rd;
   
+  tcflush(fd, TCIOFLUSH);
   while(1) {
     if((bytes_rd = read(fd, buf + pos, 1)) < 0) return -1;
     if(bytes_rd == 0) {
