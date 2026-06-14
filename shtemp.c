@@ -1,5 +1,5 @@
 /* 
- * Read temperature & humidity data from Adafruit SHT41 USB device.
+ * Read temperature & humidity data from Adafruit SHT41 USB device and produce simple graphs.
  *
  */
 
@@ -14,7 +14,7 @@
 
 #define DEVICE "/dev/serial/by-id/usb-Adafruit_SHT4x_Trinkey_M0_C2CD0A4F503059384B2E3120FF0E230D-if00"
 
-#define NPTS 128
+#define NPTS 144
 #define WIDTH 200
 #define HEIGHT 200
 
@@ -25,8 +25,8 @@
 #define MAX_HUM 100.0
 #define HUM_STEP 10.0
 
-// Update every 2 sec (2000 ms)
-#define UPDATE 2000
+// Update every 10 minutes -- NPTS chosen such that the display is for 24h
+#define UPDATE (10 * 60 * 1000)
 
 int fd, n_data = 0;
 double cur_temp = -1.0, cur_hum = -1.0, temps[NPTS], hums[NPTS];
@@ -83,8 +83,8 @@ void func_draw(GtkDrawingArea *area, cairo_t *cairo, int width, int height, gpoi
     cairo_move_to(cairo, 5.0, HEIGHT - 3.0);
     sprintf(buf, "%.1f", MIN_HUM);
     cairo_show_text(cairo, buf);
-    cairo_move_to(cairo, WIDTH-25.0, HEIGHT-3.0);
-    sprintf(buf, "%.1f", (UPDATE / 1000.0) * NPTS);
+    cairo_move_to(cairo, WIDTH-30.0, HEIGHT-3.0);
+    sprintf(buf, "%.0fh", (UPDATE / (1000.0 * 60 * 60)) * NPTS);
     cairo_show_text(cairo, buf);
   }
 
@@ -198,7 +198,7 @@ static gboolean update_data(void *asd) {
 int main(int argc, char *argv[]) {
 
   GtkWidget *window;
-  GtkWidget *temp_label, *hum_label, *hbox1, *hbox2, *vbox;
+  GtkWidget *temp_label, *hum_label, *hbox1, *hbox2, *vbox, *separ1, *separ2;
 
   gtk_init();
   window = gtk_window_new();
@@ -232,7 +232,9 @@ int main(int argc, char *argv[]) {
 
   hbox1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 2);
   hbox2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 2);
-  vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
+  vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+  separ1 = gtk_separator_new(GTK_ORIENTATION_VERTICAL);
+  separ2 = gtk_separator_new(GTK_ORIENTATION_VERTICAL);
 
   gtk_box_append(GTK_BOX(hbox1), temp_label);
   gtk_box_append(GTK_BOX(hbox1), temp);
@@ -242,7 +244,9 @@ int main(int argc, char *argv[]) {
 
   gtk_box_append(GTK_BOX(vbox), hbox1);
   gtk_box_append(GTK_BOX(vbox), hbox2);
+  gtk_box_append(GTK_BOX(vbox), separ1);
   gtk_box_append(GTK_BOX(vbox), draw_temp);
+  gtk_box_append(GTK_BOX(vbox), separ2);
   gtk_box_append(GTK_BOX(vbox), draw_hum);
 
   gtk_window_set_child(GTK_WINDOW(window), vbox);
@@ -253,6 +257,7 @@ int main(int argc, char *argv[]) {
   }
   set_tty();
 
+  update_data(NULL);
   g_timeout_add(UPDATE, update_data, NULL);
 
   gtk_widget_set_visible(window, TRUE);
