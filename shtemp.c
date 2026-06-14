@@ -26,7 +26,7 @@
 #define HUM_STEP 10.0
 
 // Update every 10 minutes -- NPTS chosen such that the display is for 24h
-#define UPDATE (10 * 60 * 1000)
+#define UPDATE (10 * 60)
 
 int fd, n_data = 0;
 double cur_temp = -1.0, cur_hum = -1.0, temps[NPTS], hums[NPTS];
@@ -84,7 +84,7 @@ void func_draw(GtkDrawingArea *area, cairo_t *cairo, int width, int height, gpoi
     sprintf(buf, "%.1f", MIN_HUM);
     cairo_show_text(cairo, buf);
     cairo_move_to(cairo, WIDTH-30.0, HEIGHT-3.0);
-    sprintf(buf, "%.0fh", (UPDATE / (1000.0 * 60 * 60)) * NPTS);
+    sprintf(buf, "%.0fh", (UPDATE / (60.0 * 60.0)) * (double) NPTS);
     cairo_show_text(cairo, buf);
   }
 
@@ -258,7 +258,7 @@ int main(int argc, char *argv[]) {
   set_tty();
 
   update_data(NULL);
-  g_timeout_add(UPDATE, update_data, NULL);
+  g_timeout_add_seconds(UPDATE, update_data, NULL);
 
   gtk_widget_set_visible(window, TRUE);
 
