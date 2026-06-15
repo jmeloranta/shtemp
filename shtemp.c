@@ -25,6 +25,8 @@
 #define MAX_HUM 100.0
 #define HUM_STEP 10.0
 
+// #define FAHRENHEIT // Define this for F degrees - the default is C
+
 // Update every 1 minute -- NPTS chosen such that the display is for 2h
 #define UPDATE (1 * 60)
 
@@ -171,6 +173,9 @@ static gboolean update_data(void *asd) {
     }
   } while (buf[0] == '#');
   sscanf(buf, "%*d, %le, %le, %*d", &cur_temp, &cur_hum);  
+#ifdef FAHRENHEIT
+  cur_temp = cur_temp * (9.0/5.0) + 32.0;
+#endif
 
   if(n_data < NPTS) {
     temps[n_data] = cur_temp;
