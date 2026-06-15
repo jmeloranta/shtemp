@@ -25,8 +25,8 @@
 #define MAX_HUM 100.0
 #define HUM_STEP 10.0
 
-// Update every 10 minutes -- NPTS chosen such that the display is for 24h
-#define UPDATE (10 * 60)
+// Update every 1 minute -- NPTS chosen such that the display is for 2h
+#define UPDATE (1 * 60)
 
 int fd, n_data = 0;
 double cur_temp = -1.0, cur_hum = -1.0, temps[NPTS], hums[NPTS];
