@@ -40,6 +40,8 @@ void convert_data(double *orig, double *new_x, double *new_y, double min, double
 
   for (i = 0; i < n_data; i++) {
     new_x[i] = ((double) WIDTH) * ((double) i) / (double) NPTS;
+    if(orig[i] < min) orig[i] = min;
+    if(orig[i] > max) orig[i] = max;
     new_y[i] = ((double) HEIGHT) * (1.0 - ((orig[i] - min) / (max - min)));
   }
 }
