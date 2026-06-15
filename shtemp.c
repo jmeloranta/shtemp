@@ -18,7 +18,7 @@
 #define WIDTH 200
 #define HEIGHT 200
 
-#define MIN_TEMP -20.0
+#define MIN_TEMP 0.0
 #define MAX_TEMP 40.0
 #define TEMP_STEP 5.0
 #define MIN_HUM 0.0
