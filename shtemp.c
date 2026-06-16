@@ -25,8 +25,8 @@
 #define MAX_HUM 100.0
 #define HUM_STEP 10.0
 
-#define MAX_TEMP_WARN 40.0  // in C or F
-#define MIN_TEMP_WARN 5.0
+#define MAX_TEMP_WARN 40.0  // in C or F depending on if FAHRENHEIT is set or not
+#define MIN_TEMP_WARN 10.0
 #define MAX_HUM_WARN 60.0
 #define MIN_HUM_WARN 0.0
 
