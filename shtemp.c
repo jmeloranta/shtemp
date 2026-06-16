@@ -14,8 +14,8 @@
 
 #define DEVICE "/dev/serial/by-id/usb-Adafruit_SHT4x_Trinkey_M0_C2CD0A4F503059384B2E3120FF0E230D-if00"
 
-#define NPTS 144
-#define WIDTH 200
+#define NPTS 1444
+#define WIDTH 250
 #define HEIGHT 200
 
 #define MIN_TEMP 0.0
@@ -27,7 +27,7 @@
 
 // #define FAHRENHEIT // Define this for F degrees - the default is C
 
-// Update every 1 minute -- NPTS chosen such that the display is for 2h
+// Update every 1 minute -- NPTS chosen such that the display is for 24h
 #define UPDATE (1 * 60)
 
 int fd, n_data = 0;
@@ -46,6 +46,26 @@ void convert_data(double *orig, double *new_x, double *new_y, double min, double
     if(orig[i] > max) orig[i] = max;
     new_y[i] = ((double) HEIGHT) * (1.0 - ((orig[i] - min) / (max - min)));
   }
+}
+
+double find_min(double *data) {
+
+  int i;
+  double m = 1E99;
+
+  for (i = 0; i < n_data; i++)
+    if(data[i] < m) m = data[i];
+  return m;
+}
+
+double find_max(double *data) {
+
+  int i;
+  double m = -1E99;
+
+  for (i = 0; i < n_data; i++)
+    if(data[i] > m) m = data[i];
+  return m;
 }
 
 void func_draw(GtkDrawingArea *area, cairo_t *cairo, int width, int height, gpointer user_data) {
@@ -192,12 +212,12 @@ static gboolean update_data(void *asd) {
   }
 
 #ifdef FAHRENHEIT
-  sprintf(buf, "<span color='blue'>%2.1lf F</span>", cur_temp);
+  sprintf(buf, "<span color='blue'>%2.0lf F (%2.0lf F, %2.0lf F)</span>", cur_temp, find_max(temps), find_min(temps));
 #else
-  sprintf(buf, "<span color='blue'>%2.1lf C</span>", cur_temp);
+  sprintf(buf, "<span color='blue'>%2.0lf C (%2.0lf C, %2.0lf C)</span>", cur_temp, find_max(temps), find_min(temps));
 #endif
   gtk_label_set_markup(GTK_LABEL(temp), buf);
-  sprintf(buf, "<span color='blue'>%2.2lf %%</span>", cur_hum);
+  sprintf(buf, "<span color='blue'>%2.0lf %% (%2.0lf %%, %2.0lf %%)</span>", cur_hum, find_max(hums), find_min(hums));
   gtk_label_set_markup(GTK_LABEL(hum), buf);
 
   func_draw(GTK_DRAWING_AREA(draw_temp), cairo_temp, 200, 200, (void *) temps);
