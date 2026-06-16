@@ -95,17 +95,17 @@ void func_draw(GtkDrawingArea *area, cairo_t *cairo, int width, int height, gpoi
   cairo_set_source_rgb(cairo, 0.0, 0.0, 1.0);
   if(user_data == (void *) temps) {
     cairo_move_to(cairo, 5.0, 11.0);
-    sprintf(buf, "%.1f", MAX_TEMP);
+    sprintf(buf, "%.0f", MAX_TEMP);
     cairo_show_text(cairo, buf);
     cairo_move_to(cairo, 5.0, HEIGHT - 3.0);
-    sprintf(buf, "%.1f", MIN_TEMP);
+    sprintf(buf, "%.0f", MIN_TEMP);
     cairo_show_text(cairo, buf);
   } else {
     cairo_move_to(cairo, 5.0, 11.0);
-    sprintf(buf, "%.1f", MAX_HUM);
+    sprintf(buf, "%.0f", MAX_HUM);
     cairo_show_text(cairo, buf);
     cairo_move_to(cairo, 5.0, HEIGHT - 3.0);
-    sprintf(buf, "%.1f", MIN_HUM);
+    sprintf(buf, "%.0f", MIN_HUM);
     cairo_show_text(cairo, buf);
     cairo_move_to(cairo, WIDTH-30.0, HEIGHT-3.0);
     sprintf(buf, "%.0fh", (UPDATE / (60.0 * 60.0)) * (double) NPTS);
