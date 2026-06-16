@@ -191,7 +191,11 @@ static gboolean update_data(void *asd) {
     hums[NPTS-1] = cur_hum;
   }
 
+#ifdef FAHRENHEIT
+  sprintf(buf, "<span color='blue'>%2.1lf F</span>", cur_temp);
+#else
   sprintf(buf, "<span color='blue'>%2.1lf C</span>", cur_temp);
+#endif
   gtk_label_set_markup(GTK_LABEL(temp), buf);
   sprintf(buf, "<span color='blue'>%2.2lf %%</span>", cur_hum);
   gtk_label_set_markup(GTK_LABEL(hum), buf);
