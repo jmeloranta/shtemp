@@ -19,11 +19,16 @@
 #define HEIGHT 200
 
 #define MIN_TEMP 0.0
-#define MAX_TEMP 40.0
+#define MAX_TEMP 50.0
 #define TEMP_STEP 5.0
 #define MIN_HUM 0.0
 #define MAX_HUM 100.0
 #define HUM_STEP 10.0
+
+#define MAX_TEMP_WARN 40.0  // in C or F
+#define MIN_TEMP_WARN 5.0
+#define MAX_HUM_WARN 60.0
+#define MIN_HUM_WARN 0.0
 
 // #define FAHRENHEIT // Define this for F degrees - the default is C
 
@@ -212,12 +217,21 @@ static gboolean update_data(void *asd) {
   }
 
 #ifdef FAHRENHEIT
-  sprintf(buf, "<span color='blue'>%2.0lf F (%2.0lf F, %2.0lf F)</span>", cur_temp, find_max(temps), find_min(temps));
+  if(cur_temp < MIN_TEMP_WARN || cur_temp > MAX_TEMP_WARN) 
+    sprintf(buf, "<span color='red'>%2.0lf F (%2.0lf F, %2.0lf F)</span>", cur_temp, find_max(temps), find_min(temps));
+  else
+    sprintf(buf, "<span color='blue'>%2.0lf F (%2.0lf F, %2.0lf F)</span>", cur_temp, find_max(temps), find_min(temps));
 #else
-  sprintf(buf, "<span color='blue'>%2.0lf C (%2.0lf C, %2.0lf C)</span>", cur_temp, find_max(temps), find_min(temps));
+  if(cur_temp < MIN_TEMP_WARN || cur_temp > MAX_TEMP_WARN) 
+    sprintf(buf, "<span color='red'>%2.0lf C (%2.0lf C, %2.0lf C)</span>", cur_temp, find_max(temps), find_min(temps));
+  else
+    sprintf(buf, "<span color='blue'>%2.0lf C (%2.0lf C, %2.0lf C)</span>", cur_temp, find_max(temps), find_min(temps));
 #endif
   gtk_label_set_markup(GTK_LABEL(temp), buf);
-  sprintf(buf, "<span color='blue'>%2.0lf %% (%2.0lf %%, %2.0lf %%)</span>", cur_hum, find_max(hums), find_min(hums));
+  if(cur_hum < MIN_HUM_WARN || cur_hum > MAX_HUM_WARN)  
+    sprintf(buf, "<span color='red'>%2.0lf %% (%2.0lf %%, %2.0lf %%)</span>", cur_hum, find_max(hums), find_min(hums));
+  else
+    sprintf(buf, "<span color='blue'>%2.0lf %% (%2.0lf %%, %2.0lf %%)</span>", cur_hum, find_max(hums), find_min(hums));
   gtk_label_set_markup(GTK_LABEL(hum), buf);
 
   func_draw(GTK_DRAWING_AREA(draw_temp), cairo_temp, 200, 200, (void *) temps);
